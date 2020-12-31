@@ -2702,13 +2702,15 @@ namespace ts {
 
         // TYPES
 
+        // for<T> | for<T>: R | for R | for: R
         function parseTypeConstructor(): TypeConstructorNode {
             const pos = getNodePos();
+            const typeParameters = parseTypeParameters();
+            const type = typeParameters === undefined
+                ? (parseOptional(SyntaxKind.ColonToken), parseType())
+                : parseTypeAnnotation();
             return finishNode(
-                factory.createTypeConstructorNode(
-                    parseTypeParameters(),
-                    parseTypeOrTypePredicate()
-                ),
+                factory.createTypeConstructorNode(typeParameters, type),
                 pos
             );
         }
