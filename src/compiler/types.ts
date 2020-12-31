@@ -210,6 +210,7 @@ namespace ts {
         ConstructSignature,
         IndexSignature,
         // Type
+        TypeConstructor,
         TypePredicate,
         TypeReference,
         FunctionType,
@@ -642,6 +643,7 @@ namespace ts {
 
     /* @internal */
     export type TypeNodeSyntaxKind =
+        | SyntaxKind.TypeConstructor
         | KeywordTypeSyntaxKind
         | SyntaxKind.TypePredicate
         | SyntaxKind.TypeReference
@@ -1520,6 +1522,12 @@ namespace ts {
 
     export interface ConstructorTypeNode extends FunctionOrConstructorTypeNodeBase {
         readonly kind: SyntaxKind.ConstructorType;
+    }
+
+    export interface TypeConstructorNode extends TypeNode {
+        readonly kind: SyntaxKind.TypeConstructor;
+        readonly typeParameters?: NodeArray<TypeParameterDeclaration>;
+        readonly type?: TypeNode;
     }
 
     export interface NodeWithTypeArguments extends TypeNode {
@@ -6786,6 +6794,8 @@ namespace ts {
         //
 
         createKeywordTypeNode<TKind extends KeywordTypeSyntaxKind>(kind: TKind): KeywordTypeNode<TKind>;
+        createTypeConstructorNode(typeParameters: readonly TypeParameterDeclaration[] | undefined, type: TypeNode | undefined): TypeConstructorNode;
+        updateTypeConstructorNode(node: TypeConstructorNode, typeParameters: readonly TypeParameterDeclaration[] | undefined, type: TypeNode | undefined): TypeConstructorNode;
         createTypePredicateNode(assertsModifier: AssertsKeyword | undefined, parameterName: Identifier | ThisTypeNode | string, type: TypeNode | undefined): TypePredicateNode;
         updateTypePredicateNode(node: TypePredicateNode, assertsModifier: AssertsKeyword | undefined, parameterName: Identifier | ThisTypeNode, type: TypeNode | undefined): TypePredicateNode;
         createTypeReferenceNode(typeName: string | EntityName, typeArguments?: readonly TypeNode[]): TypeReferenceNode;

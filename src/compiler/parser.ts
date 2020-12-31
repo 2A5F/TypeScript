@@ -2702,6 +2702,17 @@ namespace ts {
 
         // TYPES
 
+        function parseTypeConstructor(): TypeConstructorNode {
+            const pos = getNodePos();
+            return finishNode(
+                factory.createTypeConstructorNode(
+                    parseTypeParameters(),
+                    parseTypeOrTypePredicate()
+                ),
+                pos
+            );
+        }
+
         function parseEntityNameOfTypeReference() {
             return parseEntityName(/*allowReservedWords*/ true, Diagnostics.Type_expected);
         }
@@ -3438,6 +3449,8 @@ namespace ts {
                 case SyntaxKind.ObjectKeyword:
                     // If these are followed by a dot, then parse these out as a dotted type reference instead.
                     return tryParse(parseKeywordAndNoDot) || parseTypeReference();
+                case SyntaxKind.ForKeyword:
+                    return parseTypeConstructor();
                 case SyntaxKind.AsteriskEqualsToken:
                     // If there is '*=', treat it as * followed by postfix =
                     scanner.reScanAsteriskEqualsToken();

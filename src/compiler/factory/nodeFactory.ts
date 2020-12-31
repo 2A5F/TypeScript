@@ -97,6 +97,8 @@ namespace ts {
             createTemplateLiteralTypeSpan,
             updateTemplateLiteralTypeSpan,
             createKeywordTypeNode,
+            createTypeConstructorNode,
+            updateTypeConstructorNode,
             createTypePredicateNode,
             updateTypePredicateNode,
             createTypeReferenceNode,
@@ -1628,6 +1630,22 @@ namespace ts {
         // @api
         function createKeywordTypeNode<TKind extends KeywordTypeSyntaxKind>(kind: TKind) {
             return createToken(kind);
+        }
+
+        // @api
+        function createTypeConstructorNode(typeParameters: readonly TypeParameterDeclaration[] | undefined, type: TypeNode | undefined): TypeConstructorNode {
+            const node = createBaseNode<TypeConstructorNode>(SyntaxKind.TypeConstructor);
+            node.typeParameters = asNodeArray(typeParameters);
+            node.type = type;
+            return node;
+        }
+
+        // @api
+        function updateTypeConstructorNode(node: TypeConstructorNode, typeParameters: readonly TypeParameterDeclaration[] | undefined, type: TypeNode | undefined): TypeConstructorNode {
+            return node.typeParameters !== typeParameters
+                || node.type !== type
+                ? update(createTypeConstructorNode(typeParameters, type), node)
+                : node;
         }
 
         // @api
