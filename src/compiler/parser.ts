@@ -2705,6 +2705,8 @@ namespace ts {
         // for<T> | for<T>: R | for R | for: R
         function parseTypeConstructor(): TypeConstructorNode {
             const pos = getNodePos();
+            // skip the `for`
+            nextToken();
             const typeParameters = parseTypeParameters();
             const type = typeParameters === undefined
                 ? (parseOptional(SyntaxKind.ColonToken), parseType())
